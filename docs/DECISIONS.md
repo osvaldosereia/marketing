@@ -7,62 +7,88 @@ Atualizado em: 2026-09-25
 ### D001 — Projeto separado do Vitrine/Admin
 O Marketing OS será desenvolvido no repositório `osvaldosereia/marketing`, com ciclo de deploy e domínio técnico independentes.
 
-Motivo: evitar que experimentos de marketing, APIs sociais, geração de mídia ou mudanças de plataforma afetem o checkout, pedidos, estoque, fiscal ou operação da Dona Antônia.
+Motivo: evitar que experimentos de marketing ou integrações externas afetem checkout, pedidos, estoque, fiscal ou operação.
 
 ### D002 — Core operacional continua sendo a fonte de verdade
-Marketing OS não será ERP e não será fonte de verdade de preço, estoque, pedido ou cliente fiscal.
+Marketing não será ERP nem fonte de verdade de preço, estoque, pedido ou cliente fiscal.
 
 Fontes:
 - Vitrine/Core Dona Antônia: regras comerciais e operação;
-- Bling: ERP/fiscal e dados que já são canônicos no projeto;
+- Bling: ERP/fiscal e eventos;
 - PapoAI: canal WhatsApp, CRM e automações nativas de conversa;
-- Marketing OS: campanhas, conteúdo, calendário, oportunidades, social inbox não-WhatsApp, reputação e métricas.
+- Marketing: jornadas, consentimento, pós-venda, recompra e métricas.
 
 ### D003 — PapoAI primeiro para WhatsApp
-Não duplicar recursos do PapoAI.
-
-Sempre que o PapoAI oferecer nativamente:
-- atendimento;
-- IA de conversa;
-- áudio/imagem;
-- multiatendimento;
-- etiquetas;
-- Kanban;
-- funil;
-- follow-up;
-- campanhas;
-- templates Meta;
-- origem do lead;
-- relatórios;
-o Marketing OS deverá integrar/orquestrar em vez de reconstruir.
+Não duplicar atendimento, IA de conversa, multiatendimento, Kanban, follow-up, campanhas e templates quando o PapoAI os oferecer com contrato suficiente.
 
 ### D004 — Foco geográfico
-Operação comercial local:
-- Cuiabá/MT;
-- Várzea Grande/MT.
+Operação comercial somente Cuiabá/MT e Várzea Grande/MT nesta fase.
 
-A estratégia deve priorizar recursos de intenção local, reputação local, catálogo/local inventory, WhatsApp e mensuração de vendas locais.
+### D005 — Prioridade para oficial + gratuito/incluído
+Antes de contratar terceiros, usar APIs oficiais e recursos já pagos/incluídos quando atenderem ao requisito.
 
-### D005 — Prioridade para oficial + gratuito
-Antes de contratar terceiros, estudar e usar recursos oficiais gratuitos ou incluídos nas plataformas existentes.
-
-### D006 — Nenhum código de produção durante a fase de pesquisa
-Até PROJECT-MASTER ser fechado:
-- não criar banco;
-- não criar Edge Functions;
-- não conectar APIs em produção;
+### D006 — Sem código de produção durante pesquisa
+Até PROJECT-MASTER e gates mínimos:
+- não criar banco de produção;
+- não criar sender real;
+- não ativar campanha;
 - não reativar Make;
-- não modificar Vitrine/Admin.
+- não modificar Vitrine/Admin por este projeto.
 
 ### D007 — Make é inventário, não runtime
-Cenários antigos podem ser lidos como evidência técnica e histórico. Não serão reativados como motor do Marketing OS.
+Cenários antigos servem somente como evidência/referência.
 
 ### D008 — Integração por Bridge
-A futura conexão Core -> Marketing será por API/eventos/read-model controlado. Marketing não ganhará acesso irrestrito ao banco operacional.
+Core -> Marketing por eventos/read API controlados. Marketing não recebe acesso irrestrito ao banco operacional ou credenciais Bling.
 
 ### D009 — Documentação é parte do produto
-Toda rodada futura deve:
+Toda rodada:
 1. ler PROJECT-MASTER, HANDOFF e DECISIONS;
-2. documentar mudanças;
-3. atualizar HANDOFF antes de encerrar;
-4. registrar decisões relevantes antes/depois da implementação.
+2. registrar decisão/mudança;
+3. atualizar HANDOFF;
+4. não depender da memória de um chat.
+
+### D010 — Escopo congelado até executar
+Até esta integração estar executável e homologada, o projeto Marketing trabalha apenas em:
+**Bling -> PapoAI -> WhatsApp -> pós-venda -> consentimento -> recompra.**
+
+Demais canais sociais ficam pausados.
+
+### D011 — Bling não chama PapoAI sem policy gate
+Mesmo se houver conector Bling nativo no PapoAI, mudanças de status passam pelo Core/Marketing policy layer antes do envio.
+
+Motivos:
+- idempotência;
+- tradução de estado técnico;
+- suppression;
+- consentimento;
+- auditoria;
+- portabilidade futura.
+
+### D012 — Transacional e marketing são separados
+Mensagem necessária sobre pedido não concede consentimento de marketing.
+
+Recompra/oferta exige opt-in válido e revogável.
+
+### D013 — Base histórica não recebe opt-in automático
+Estado observado: 0/490 clientes com opt-in ativo.
+Nunca alterar a base em lote apenas para habilitar campanhas.
+
+### D014 — Outbound PapoAI é gate obrigatório
+Não programar sender usando endpoint presumido.
+
+Antes:
+- obter contrato outbound oficial/da conta;
+- provar envio;
+- provar template;
+- obter provider message id;
+- validar callback/status quando disponível.
+
+### D015 — Recompra não reutiliza read models legados removidos
+Construir read model novo baseado em pedidos válidos e itens reais.
+Não reativar `customer_purchase_summary_v1`, `get_customer_purchase_history_v1` ou `customer_product_stats` sem projeto explícito.
+
+### D016 — Primeiro canário transacional
+O primeiro envio automático recomendado é `order.out_for_delivery`, após existir um estado inequívoco.
+
+Hoje `ready` e `out_for_delivery` compartilham a situação Bling `Verificado`; isso precisa ser resolvido antes.
