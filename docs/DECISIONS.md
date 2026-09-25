@@ -92,3 +92,19 @@ Não reativar `customer_purchase_summary_v1`, `get_customer_purchase_history_v1`
 O primeiro envio automático recomendado é `order.out_for_delivery`, após existir um estado inequívoco.
 
 Hoje `ready` e `out_for_delivery` compartilham a situação Bling `Verificado`; isso precisa ser resolvido antes.
+
+
+### D017 — Atendido não significa entrega física
+A situação padrão `Atendido` do Bling não será usada como gatilho de pós-venda, pois pode ser aplicada automaticamente na geração da NF.
+
+Fonte primária de `order.delivered`:
+- confirmação física no Core/tela do entregador.
+
+O Bling poderá receber uma situação personalizada de espelho depois da POC.
+
+### D018 — Preferir automação nativa do PapoAI se controlável
+Se o PapoAI permitir iniciar/parar régua/follow-up por API/webhook e expuser status suficiente, usar o PapoAI para timers/cadências em vez de recriar scheduler próprio.
+
+Fallback:
+- Marketing agenda e chama sender PapoAI;
+- Meta Cloud API direta somente como contingência explicitamente homologada, nunca em paralelo silencioso com o PapoAI.
