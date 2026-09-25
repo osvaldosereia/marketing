@@ -113,6 +113,10 @@ Make legado contém outbound Meta funcional com texto, áudio, imagem, botões, 
 
 Próximo trabalho deve obter o contrato PapoAI pela conta/suporte/documentação privada e homologar.
 
+Verificação do ambiente ChatGPT em 2026-09-25:
+- não existe conector/plugin PapoAI disponível diretamente;
+- portanto operação direta daqui dependerá do MCP/API do PapoAI ou de um MCP próprio do Marketing.
+
 ## Consentimento
 
 Estado real observado:
