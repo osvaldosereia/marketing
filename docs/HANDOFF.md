@@ -18,16 +18,45 @@ Produzir uma especificação completa, baseada em fontes oficiais e no estado re
 - Make não volta como runtime.
 - Nada de programação nesta fase.
 
+## Documentos existentes
+- `README.md` — escopo e regras do projeto.
+- `docs/DECISIONS.md` — decisões arquiteturais.
+- `docs/WHATSAPP-PLATFORM-ALTERNATIVES.md` — estudo de Blip, Zenvia, WATI, respond.io, Twilio, 360dialog e Gupshup.
+- este `docs/HANDOFF.md`.
+
 ## Achados já confirmados
 - repositório Marketing nasceu vazio;
 - Supabase operacional possui base real de clientes, pedidos, produtos e consentimento de marketing;
-- PapoAI possui campanhas/funis/automações, follow-up, etiquetas IA, Kanban, rastreamento de origem, relatórios, multiatendimento e atendimento IA;
+- PapoAI continua sendo o canal WhatsApp atual e o Core já captura webhooks reais;
+- foram observados 39 eventos PapoAI normalizados no banco no momento da pesquisa;
+- payload real PapoAI observado: `message.received`, com objetos `contact`, `message` e `session`;
+- tipos reais observados incluem texto, áudio OGG/Opus e imagem JPEG;
 - legado Make prova que já houve publicação nativa no Instagram e automação comentário -> resposta -> privado;
 - Google Merchant Center oferece listagens gratuitas e listagens locais gratuitas no Brasil;
-- Bling possui webhooks oficiais para pedido, produto, estoque, estoque virtual, fornecedor-produto e notas.
+- Bling possui webhooks oficiais para pedido, produto, estoque, estoque virtual, fornecedor-produto e notas;
+- alternativas PapoAI pesquisadas: Blip, Zenvia, WATI, respond.io, Twilio, 360dialog e Gupshup;
+- nenhuma dessas sete possui conector nativo disponível no ambiente ChatGPT atual;
+- Blip e Zenvia são as contingências mais próximas como plataforma pronta;
+- Twilio/360dialog/Gupshup são mais adequadas se decidirmos construir uma camada própria.
 
-## Próximo passo
-Continuar a pesquisa e consolidar:
+## Decisão sobre PapoAI
+Não migrar agora. Antes, auditar quais APIs e recursos estão disponíveis na conta atual:
+- contatos;
+- conversas/mensagens;
+- etiquetas;
+- Kanban/funil;
+- follow-up;
+- campanhas;
+- templates;
+- métricas;
+- webhooks;
+- WhatsApp Flows;
+- catálogo/product templates;
+- opt-in/opt-out;
+- origem do lead.
+
+## Próximo passo de pesquisa
+Consolidar:
 - capacidades/permissões Meta;
 - Google Business Profile;
 - PapoAI e contrato real de integração;
@@ -35,14 +64,16 @@ Continuar a pesquisa e consolidar:
 - recursos locais gratuitos adicionais;
 - Bling pós-venda;
 - atribuição;
-- arquitetura e roadmap.
+- arquitetura e roadmap;
+- depois criar `docs/PROJECT-MASTER.md` consolidado antes de programar.
 
 ## Regra para nova janela
 Antes de responder/programar:
 1. ler `README.md`;
-2. ler `docs/PROJECT-MASTER.md`;
+2. se já existir, ler `docs/PROJECT-MASTER.md`;
 3. ler `docs/DECISIONS.md`;
-4. ler este HANDOFF;
-5. verificar commits mais recentes.
+4. ler `docs/WHATSAPP-PLATFORM-ALTERNATIVES.md`;
+5. ler este HANDOFF;
+6. verificar commits mais recentes.
 
 Não confiar apenas em memória da conversa.
