@@ -105,13 +105,25 @@ Situações relevantes observadas:
 - `915901` — Aguardando confirmação;
 - `915902` — Aprovado / Separar.
 
-Mapeamento operacional atual:
+Mapeamento operacional observado:
 - created/storefront_received -> Aguardando confirmação;
 - confirmed/processing -> Aprovado / Separar;
 - ready -> Verificado;
 - out_for_delivery -> Verificado;
-- delivered -> Atendido;
+- delivered -> Atendido (mapeamento local atual, **não confiável como prova física de entrega**);
 - cancelled -> Cancelado.
+
+### Correção crítica — Atendido não é Entregue
+
+A documentação oficial do Bling informa que a situação padrão `Atendido` pode ser aplicada automaticamente ao gerar a nota fiscal.
+
+Portanto:
+- `Atendido` não será gatilho de pós-venda;
+- geração/autorização fiscal não significa entrega ao cliente;
+- `order.delivered` deve nascer da confirmação física do entregador/Core;
+- opcionalmente, esse evento pode depois espelhar uma situação Bling personalizada `Entregue ao cliente`.
+
+Para a entrega local própria, o Core/entregador é a fonte primária do fato físico.
 
 ### Gap crítico de estados
 
@@ -127,7 +139,11 @@ Antes de automatizar mensagem "saiu para entrega", escolher uma solução:
 
 Alternativa: usar evento canônico de expedição/rota do Core como fonte desse momento.
 
-Como o foco deste projeto é integração Bling -> PapoAI, a situação explícita no Bling é a opção conceitualmente mais limpa, mas só deverá ser criada durante POC autorizada.
+O Bling suporta situações personalizadas e Gerenciador de Transições. Para a Dona Antônia, estudar em POC:
+- `Saiu para entrega`;
+- `Entregue ao cliente`.
+
+Essas situações não devem repetir ações de estoque, contas ou emissão fiscal. Elas podem ser usadas como espelho e reconciliação, mas o fato físico de entrega continua pertencendo ao Core.
 
 ## 3.3 PapoAI
 
@@ -171,6 +187,26 @@ mas a documentação pública encontrada não expõe o endpoint/contrato outboun
 **Este é o Gate P1 e o principal bloqueador técnico antes da programação de envio.**
 
 Não inventar endpoint nem bypassar PapoAI com Cloud API Meta enquanto a estratégia aprovada for PapoAI-first.
+
+### Pesquisa aprofundada do Gate P1
+
+A pesquisa pública confirmou capacidades do produto, mas não encontrou contrato REST outbound para clientes. Ver `docs/PAPOAI-OUTBOUND-RESEARCH.md`.
+
+O PapoAI atual divulga nativamente:
+- campanhas/funis/automações;
+- follow-up automático;
+- remarketing;
+- CRM/Kanban;
+- templates;
+- Webhook, MCP, Supabase e Bling.
+
+Por isso, existem dois modelos para homologar:
+1. Marketing agenda cada envio e PapoAI apenas transmite;
+2. **preferido se suportado:** Marketing dispara um evento e o PapoAI executa a régua/follow-up nativo.
+
+O modelo 2 reduz código e aproveita recursos já contratados, desde que exista API/webhook de entrada controlável, auditável e com cancelamento.
+
+O Make legado contém um cenário inativo de outbound via WhatsApp Business Cloud que já suportou texto, áudio, imagem, botões, listas, CTA URL e WhatsApp Flows. Isso é prova de capacidade Meta e fallback arquitetural, não autorização para reativar Make nem enviar fora do PapoAI.
 
 ## 3.4 Clientes e consentimento
 
@@ -654,7 +690,7 @@ Dashboard inicial:
 
 # 14. Gates pré-implementação
 
-## Gate B1 — Bling
+## Gate B1 — Bling/Core
 Já praticamente verde:
 - webhook real confirmado;
 - assinatura/idempotência provadas;
@@ -662,7 +698,9 @@ Já praticamente verde:
 
 Pendente para jornada:
 - definir estado inequívoco de `out_for_delivery`;
-- confirmar estado final inequívoco de entrega.
+- **não usar Atendido como prova de entrega**;
+- usar confirmação do entregador/Core como fonte de `order.delivered`;
+- decidir se `Saiu para entrega` e `Entregue ao cliente` serão também espelhados como situações personalizadas no Bling.
 
 ## Gate P1 — PapoAI outbound
 Bloqueador atual:
