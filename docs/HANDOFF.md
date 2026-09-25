@@ -29,6 +29,11 @@ Ler nesta ordem:
 
 `docs/WHATSAPP-PLATFORM-ALTERNATIVES.md` é referência de contingência, não escopo ativo.
 
+Novos documentos importantes:
+- `docs/PAPOAI-OUTBOUND-RESEARCH.md` — pesquisa profunda do Gate P1;
+- `docs/PAPOAI-CONTRACT-CHECKLIST.md` — perguntas exatas para API/MCP/Webhook do PapoAI;
+- `docs/BLING-DELIVERY-STATE-STRATEGY.md` — fonte correta para saiu/entregue.
+
 ## Estado Bling confirmado
 
 Core: `osvaldosereia/SUCEDOAN12`
@@ -64,6 +69,12 @@ Gap:
 `ready` e `out_for_delivery` atualmente usam Bling `Verificado` (24).
 Antes do canário "saiu para entrega", criar estado inequívoco ou usar evento canônico de expedição.
 
+Correção crítica:
+- Bling `Atendido` NÃO prova entrega física;
+- documentação oficial diz que pode ser aplicado automaticamente ao gerar NF;
+- `order.delivered` deverá nascer da confirmação do entregador/Core;
+- opcionalmente espelhar no Bling uma situação personalizada `Entregue ao cliente`.
+
 ## Estado PapoAI confirmado
 
 Receiver inbound existente no Core:
@@ -84,7 +95,23 @@ Core já normaliza e vincula conversa local.
 Bloqueador P1:
 **não foi encontrada documentação pública do endpoint outbound exato do PapoAI** para send message/send template.
 
-Próximo trabalho deve obter esse contrato pela conta/suporte/documentação privada e homologar.
+Pesquisa adicional confirmou publicamente que o PapoAI oferece:
+- campanhas/funis/automações;
+- follow-up automático;
+- remarketing;
+- CRM/Kanban;
+- templates;
+- Webhook;
+- MCP;
+- Bling;
+- Supabase.
+
+Preferência arquitetural:
+se o PapoAI permitir iniciar/parar uma régua por API/webhook, deixar timers/follow-up no PapoAI e manter no Marketing apenas política/estado/auditoria.
+
+Make legado contém outbound Meta funcional com texto, áudio, imagem, botões, listas, CTA e Flows. É fallback técnico/documentação, não runtime.
+
+Próximo trabalho deve obter o contrato PapoAI pela conta/suporte/documentação privada e homologar.
 
 ## Consentimento
 
@@ -174,13 +201,20 @@ D1 Recompra:
 - `f4c27c7` — INTEGRATION-CONTRACT
 - `a4ac106` — RESEARCH-SOURCES
 - `76ee241` — IMPLEMENTATION-ROADMAP
+- `7327404` — PAPOAI-OUTBOUND-RESEARCH
+- `c25dfed` — BLING-DELIVERY-STATE-STRATEGY
+- `bec9616` — atualização PROJECT-MASTER entrega/PapoAI
+- `eb1ce6d` — decisões D017/D018
+- `c1a1573` — PAPOAI-CONTRACT-CHECKLIST
 
 ## Próxima ação recomendada
 
 **Não programar ainda.**
 
 Próximo passo único:
-obter/homologar o contrato outbound real do PapoAI e seus recursos de template/status/funil/follow-up.
+obter/homologar o contrato outbound real do PapoAI e, preferencialmente, provar se um webhook/API externo consegue iniciar e cancelar uma régua/follow-up nativa.
+
+Usar `docs/PAPOAI-CONTRACT-CHECKLIST.md` como checklist.
 
 Depois disso, atualizar PROJECT-MASTER e liberar POC 1 shadow.
 
