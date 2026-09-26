@@ -55,3 +55,16 @@ Antes de programar em uma nova janela:
 - ler HANDOFF;
 - verificar últimos commits;
 - não depender apenas da memória do chat.
+
+## Desenvolvimento local
+
+```bash
+npm install
+npm run typecheck
+npm run build
+npm run dev
+```
+
+A aplicação inicia em modo mock por padrão. Nenhuma integração externa é necessária para visualizar a fundação.
+
+Primeira implementação registrada em `docs/ROUND-01-FOUNDATION.md`.
