@@ -221,3 +221,57 @@ Somente depois:
 - `2c0e0ad` — Technical Implementation Plan;
 - `60b773d` — MVP Data Model;
 - `8654124` — POC Plan.
+
+
+## Rodada 1 executada — 2026-09-25
+
+A fundação deixou de ser apenas documentação.
+
+Implementado:
+- Next.js/React/TypeScript;
+- UI responsiva;
+- navegação funcional;
+- Hoje;
+- Oportunidades;
+- Campanhas;
+- Studio;
+- Calendário;
+- Conversas;
+- WhatsApp;
+- Email;
+- Desempenho;
+- Conexões;
+- health endpoint;
+- contratos de adapters;
+- adapters mock write-blocked;
+- Core Bridge mock;
+- renderer SVG de 4 produtos;
+- stale guard comercial;
+- role model inicial;
+- AGENTS.md.
+
+Segurança:
+- productionWritesEnabled=false;
+- Meta/PapoAI/Brevo não conectados;
+- nenhum segredo legado reutilizado;
+- Make não foi ativado.
+
+Validação:
+- revisão estrutural feita;
+- build real ainda NÃO executado porque o container desta sessão não possui acesso externo para instalar dependências;
+- não declarar gate verde até rodar install/typecheck/build em ambiente autorizado.
+
+Documento detalhado:
+`docs/ROUND-01-FOUNDATION.md`.
+
+### Próxima rodada técnica
+
+Round 2:
+1. obter ambiente de build autorizado/runner;
+2. gerar lockfile;
+3. typecheck/build;
+4. persistência isolada;
+5. schema mínimo Marketing;
+6. repositories/outbox;
+7. stale guard integrado ao workflow;
+8. providers continuam mock.
