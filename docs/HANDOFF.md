@@ -1,228 +1,163 @@
 # HANDOFF — Dona Antônia Marketing OS
 
-Atualizado em: 2026-09-25  
-Fase: especificação pré-implementação. Nenhum sender/campanha programado.
+Atualizado em: 2026-09-25
+Fase: pesquisa/arquitetura. Nenhuma automação social de produção implementada.
 
 ## Repositório
 `osvaldosereia/marketing`
 
-## ESCOPO ATUAL CONGELADO
+## Escopo prioritário atual
 
-Trabalhar somente em:
+Construir ferramenta separada do Vitrine/Admin para:
+- Instagram/Facebook oficiais;
+- carrosséis/posts/Reels/Stories quando suportados;
+- comentários + IA;
+- Private Reply após comentário conforme regra Meta;
+- Direct dentro das janelas/permissões;
+- WhatsApp Status: asset + compartilhamento manual;
+- WhatsApp/PapoAI: imagem com 4 produtos;
+- email marketing;
+- Creative Studio;
+- calendário;
+- analytics/aprendizado.
 
-**Bling -> eventos comerciais -> PapoAI -> WhatsApp -> pós-venda -> consentimento -> recompra**
+## Decisões críticas
 
-Não retomar redes sociais/Google/Creative Studio/Ads até esta trilha estar executável.
+- somente APIs oficiais;
+- não automatizar boas-vindas a novo seguidor;
+- não automatizar WhatsApp Status por clique robótico;
+- Instagram Stories oficial somente Business;
+- Facebook Story fica manual/POC até endpoint oficial ser confirmado;
+- PapoAI permanece preferido no WhatsApp;
+- Brevo é provider preferido para email V1;
+- OpenAI cria/analisa, mas preço e estoque vêm do Core;
+- foto real do produto é obrigatória;
+- reclamações e casos críticos vão para humano;
+- horários externos são apenas seed; aprender com dados próprios.
+
+## Arquitetura
+
+Marketing será aplicação/runtime próprios.
+
+Core Dona Antônia:
+- produtos;
+- preços;
+- estoque;
+- ofertas;
+- cestas;
+- pedidos.
+
+Marketing lê por Bridge controlada.
+
+Adapters previstos:
+- MetaInstagramAdapter;
+- MetaFacebookAdapter;
+- PapoAIAdapter;
+- BrevoEmailAdapter;
+- SystemShareAdapter para Status.
 
 ## Documentos canônicos
 
-Ler nesta ordem:
 1. `README.md`
 2. `docs/PROJECT-MASTER.md`
 3. `docs/DECISIONS.md`
-4. `docs/JOURNEY-MATRIX.md`
-5. `docs/INTEGRATION-CONTRACT.md`
-6. `docs/IMPLEMENTATION-ROADMAP.md`
-7. `docs/RESEARCH-SOURCES.md`
-8. `docs/BLING-PAPOAI-POSTSALE.md`
-9. este `docs/HANDOFF.md`
+4. `docs/META-OFFICIAL-CAPABILITIES.md`
+5. `docs/CREATIVE-DESIGN-SYSTEM.md`
+6. `docs/CONTENT-PUBLISHING-STRATEGY.md`
+7. `docs/EMAIL-MARKETING.md`
+8. `docs/SOCIAL-RESEARCH-SOURCES.md`
+9. este HANDOFF.
 
-`docs/WHATSAPP-PLATFORM-ALTERNATIVES.md` é referência de contingência, não escopo ativo.
+## Conteúdo V1
 
-Novos documentos importantes:
-- `docs/PAPOAI-OUTBOUND-RESEARCH.md` — pesquisa profunda do Gate P1;
-- `docs/PAPOAI-CONTRACT-CHECKLIST.md` — perguntas exatas para API/MCP/Webhook do PapoAI;
-- `docs/BLING-DELIVERY-STATE-STRATEGY.md` — fonte correta para saiu/entregue.
+Cadência inicial:
+- Feed: 4–5/semana;
+- Carrossel: 2/semana;
+- Reel: 1–2/semana após POC;
+- Story: 2–4 frames/dia operacional;
+- Status: 1–3 assets/dia para compartilhamento;
+- Email: 1/semana.
 
-## Estado Bling confirmado
+Janelas iniciais Cuiabá:
+- 09:30–10:30;
+- 11:30–13:30;
+- 17:30–19:00.
 
-Core: `osvaldosereia/SUCEDOAN12`
-Supabase canônico: `ssbesxgaijknwsjbsbcz`
+Depois substituir por dados reais.
 
-Runtime atual:
-- mode=homologation;
-- hub_enabled=false;
-- webhooks_enabled=false para processamento geral;
-- orders_enabled=true;
-- catálogo de situações ready;
-- status_updates_enabled=true;
-- módulo Vendas id 98310;
-- OAuth/read probes OK.
+## Criativos
 
-Webhooks reais já provados:
-- order.updated;
-- virtual_stock.updated;
-- HMAC válido;
-- assinatura inválida rejeitada;
-- idempotência;
-- rollback;
-- eventos reais assinados.
+Produto real + composição determinística.
 
-Situações relevantes:
-- 9 Atendido;
-- 12 Cancelado;
-- 24 Verificado;
-- 915901 Aguardando confirmação;
-- 915902 Aprovado / Separar.
+Template prioritário:
+**4 produtos por imagem**, grade 2x2, para conversa WhatsApp.
 
-Gap:
-`ready` e `out_for_delivery` atualmente usam Bling `Verificado` (24).
-Antes do canário "saiu para entrega", criar estado inequívoco ou usar evento canônico de expedição.
+Formats:
+- Feed 1080x1350;
+- Story/Status 1080x1920;
+- Reels 1080x1920.
 
-Correção crítica:
-- Bling `Atendido` NÃO prova entrega física;
-- documentação oficial diz que pode ser aplicado automaticamente ao gerar NF;
-- `order.delivered` deverá nascer da confirmação do entregador/Core;
-- opcionalmente espelhar no Bling uma situação personalizada `Entregue ao cliente`.
+Asset com preço vira stale se preço/estoque/oferta mudar.
 
-## Estado PapoAI confirmado
+## Meta — capability
 
-Receiver inbound existente no Core:
-`papo-external-agent-v1`
+Confirmado:
+- IG feed/content publishing;
+- IG Reels;
+- IG Stories Business;
+- comments;
+- messaging;
+- FB Reels;
+- Messenger.
 
-Payload real:
-- event.type=message.received;
-- data.contact;
-- data.message;
-- data.session;
-- message id/WAMID;
-- direction;
-- phone from/to;
-- texto/mídia.
+Gate:
+- App Review;
+- Business Verification;
+- Advanced Access onde necessário;
+- scopes/tokens.
 
-Core já normaliza e vincula conversa local.
+Não confirmado para V1:
+- Facebook Story publishing API.
 
-Bloqueador P1:
-**não foi encontrada documentação pública do endpoint outbound exato do PapoAI** para send message/send template.
+Proibido no projeto:
+- new follower -> DM.
 
-Pesquisa adicional confirmou publicamente que o PapoAI oferece:
-- campanhas/funis/automações;
-- follow-up automático;
-- remarketing;
-- CRM/Kanban;
-- templates;
-- Webhook;
-- MCP;
-- Bling;
-- Supabase.
+## Email
 
-Preferência arquitetural:
-se o PapoAI permitir iniciar/parar uma régua por API/webhook, deixar timers/follow-up no PapoAI e manter no Marketing apenas política/estado/auditoria.
+Provider V1:
+Brevo.
 
-Make legado contém outbound Meta funcional com texto, áudio, imagem, botões, listas, CTA e Flows. É fallback técnico/documentação, não runtime.
+Antes:
+- domínio;
+- SPF;
+- DKIM;
+- DMARC;
+- consent;
+- unsubscribe;
+- webhook.
 
-Próximo trabalho deve obter o contrato PapoAI pela conta/suporte/documentação privada e homologar.
+## Próxima etapa antes de código
 
-Verificação do ambiente ChatGPT em 2026-09-25:
-- não existe conector/plugin PapoAI disponível diretamente;
-- portanto operação direta daqui dependerá do MCP/API do PapoAI ou de um MCP próprio do Marketing.
+Fechar POC plan técnico:
+1. criar app Meta/validar ativo existente;
+2. mapear conta IG Business + Page;
+3. levantar tokens/scopes atuais sem expor segredo;
+4. definir Bridge do Core;
+5. definir schema mínimo Marketing;
+6. definir templates visuais finais;
+7. preparar branch/projeto isolado;
+8. só então começar implementação por canários.
 
-## Consentimento
+## Commits desta rodada
 
-Estado real observado:
-- clientes: 490;
-- marketing_opt_in=true: 0;
-- marketing_opt_in=false: 490.
+- `8b5655f` — Meta official capabilities;
+- `0c15cee` — Creative Design System;
+- `3f3ab3d` — content/publishing strategy;
+- `ad75d85` — email marketing;
+- `2717a44` — novo Project Master;
+- `5be6462` — decisões atualizadas.
 
-Regra:
-- transacional separado de marketing;
-- não habilitar base histórica;
-- criar consent ledger com prova;
-- opt-out imediato.
+## Regra para próxima janela
 
-## Histórico/recompra
-
-Pedidos locais:
-- 87 total;
-- 80 com customer_id;
-- 63 com telefone;
-- 27 com bling_order_id;
-- fontes heterogêneas.
-
-Estruturas históricas antigas de customer purchase foram removidas na limpeza.
-A função `refresh_customer_purchase_profile` é stale porque referencia tabela inexistente `customer_product_stats`.
-
-Regra:
-criar read model novo, pequeno e auditável quando a programação começar.
-
-## Jornada V1
-
-1. pedido confirmado;
-2. saiu para entrega;
-3. entregue;
-4. D+1/D+2 check pós-venda;
-5. problema -> humano + suppression;
-6. pós-venda saudável;
-7. pedir consentimento para ofertas/recompra;
-8. opt-in;
-9. elegibilidade de recompra;
-10. mensagem de recompra;
-11. novo pedido interrompe a cadência.
-
-## Ordem de implantação
-
-```
-contrato PapoAI
-→ shadow event bridge
-→ sender canário
-→ out_for_delivery
-→ delivered
-→ pós-venda
-→ consentimento
-→ read model recompra
-→ recompra canário
-→ escala
-```
-
-## Principais gates
-
-P1 PapoAI outbound:
-- send freeform;
-- send template;
-- provider id;
-- status/callback;
-- response round-trip.
-
-B1 Bling:
-- out_for_delivery inequívoco;
-- delivered inequívoco.
-
-C1 Consent:
-- wording;
-- sim/não;
-- prova;
-- revogação.
-
-D1 Recompra:
-- novo read model;
-- pedidos válidos;
-- estoque/preço revalidado.
-
-## Últimos commits do projeto Marketing nesta rodada
-
-- `4eb04a6` — PROJECT-MASTER
-- `1ce1208` — JOURNEY-MATRIX
-- `f4c27c7` — INTEGRATION-CONTRACT
-- `a4ac106` — RESEARCH-SOURCES
-- `76ee241` — IMPLEMENTATION-ROADMAP
-- `7327404` — PAPOAI-OUTBOUND-RESEARCH
-- `c25dfed` — BLING-DELIVERY-STATE-STRATEGY
-- `bec9616` — atualização PROJECT-MASTER entrega/PapoAI
-- `eb1ce6d` — decisões D017/D018
-- `c1a1573` — PAPOAI-CONTRACT-CHECKLIST
-
-## Próxima ação recomendada
-
-**Não programar ainda.**
-
-Próximo passo único:
-obter/homologar o contrato outbound real do PapoAI e, preferencialmente, provar se um webhook/API externo consegue iniciar e cancelar uma régua/follow-up nativa.
-
-Usar `docs/PAPOAI-CONTRACT-CHECKLIST.md` como checklist.
-
-Depois disso, atualizar PROJECT-MASTER e liberar POC 1 shadow.
-
-## Regra para nova janela
-
-Não confiar em memória da conversa.
-Ler os documentos canônicos e verificar commits mais recentes antes de agir.
+Não confiar apenas na conversa.
+Ler documentação e commits mais recentes antes de mudar arquitetura ou iniciar código.
