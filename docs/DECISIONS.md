@@ -4,107 +4,75 @@ Atualizado em: 2026-09-25
 
 ## Decisões vigentes
 
-### D001 — Projeto separado do Vitrine/Admin
-O Marketing OS será desenvolvido no repositório `osvaldosereia/marketing`, com ciclo de deploy e domínio técnico independentes.
+### D001 — Projeto separado
+Marketing fica no repositório `osvaldosereia/marketing` e será aplicação/runtime separados do Vitrine/Admin.
 
-Motivo: evitar que experimentos de marketing ou integrações externas afetem checkout, pedidos, estoque, fiscal ou operação.
+### D002 — Core é fonte de verdade
+Preço, estoque, produto, cesta, pedido e regras comerciais pertencem ao Core/Bling. Marketing lê por Bridge.
 
-### D002 — Core operacional continua sendo a fonte de verdade
-Marketing não será ERP nem fonte de verdade de preço, estoque, pedido ou cliente fiscal.
+### D003 — Oficial somente
+Meta/WhatsApp/Instagram/Facebook: somente APIs oficiais, OAuth, App Review e permissões aprovadas.
 
-Fontes:
-- Vitrine/Core Dona Antônia: regras comerciais e operação;
-- Bling: ERP/fiscal e eventos;
-- PapoAI: canal WhatsApp, CRM e automações nativas de conversa;
-- Marketing: jornadas, consentimento, pós-venda, recompra e métricas.
+### D004 — PapoAI primeiro no WhatsApp
+Quando PapoAI oferecer capacidade oficial suficiente, usar o PapoAI em vez de reconstruir atendimento.
 
-### D003 — PapoAI primeiro para WhatsApp
-Não duplicar atendimento, IA de conversa, multiatendimento, Kanban, follow-up, campanhas e templates quando o PapoAI os oferecer com contrato suficiente.
+### D005 — Make não volta
+Make antigo é apenas inventário/evidência.
 
-### D004 — Foco geográfico
-Operação comercial somente Cuiabá/MT e Várzea Grande/MT nesta fase.
+### D006 — IA não inventa fatos comerciais
+OpenAI cria estratégia/copy/visual/classificação, mas preço/estoque/desconto/prazo vêm de fonte determinística.
 
-### D005 — Prioridade para oficial + gratuito/incluído
-Antes de contratar terceiros, usar APIs oficiais e recursos já pagos/incluídos quando atenderem ao requisito.
+### D007 — Foto real de produto
+IA não redesenha embalagem, rótulo ou marca. Arte usa composição com foto original.
 
-### D006 — Sem código de produção durante pesquisa
-Até PROJECT-MASTER e gates mínimos:
-- não criar banco de produção;
-- não criar sender real;
-- não ativar campanha;
-- não reativar Make;
-- não modificar Vitrine/Admin por este projeto.
+### D008 — Novo seguidor não recebe DM automática
+Não há gatilho oficial suportado para automação de novo seguidor. Recurso removido.
 
-### D007 — Make é inventário, não runtime
-Cenários antigos servem somente como evidência/referência.
+### D009 — Comment -> Direct somente pela capability oficial
+Private reply segue limite/janela oficial e não vira sequência de mensagens sem nova interação válida.
 
-### D008 — Integração por Bridge
-Core -> Marketing por eventos/read API controlados. Marketing não recebe acesso irrestrito ao banco operacional ou credenciais Bling.
+### D010 — WhatsApp Status manual no último passo
+Marketing gera e compartilha asset, mas usuário confirma publicação no WhatsApp. Sem automação de tela.
 
-### D009 — Documentação é parte do produto
-Toda rodada:
-1. ler PROJECT-MASTER, HANDOFF e DECISIONS;
-2. registrar decisão/mudança;
-3. atualizar HANDOFF;
-4. não depender da memória de um chat.
+### D011 — Facebook Story não é promessa V1
+Só habilitar se POC comprovar endpoint oficial vigente. Caso contrário manual.
 
-### D010 — Escopo congelado até executar
-Até esta integração estar executável e homologada, o projeto Marketing trabalha apenas em:
-**Bling -> PapoAI -> WhatsApp -> pós-venda -> consentimento -> recompra.**
+### D012 — Brevo é provider preferido de email V1
+Usar adapter para evitar lock-in.
 
-Demais canais sociais ficam pausados.
+### D013 — Email exige consentimento/suppression
+Não transformar email de pedido em marketing irrestrito.
 
-### D011 — Bling não chama PapoAI sem policy gate
-Mesmo se houver conector Bling nativo no PapoAI, mudanças de status passam pelo Core/Marketing policy layer antes do envio.
+### D014 — Horários aprendidos
+Benchmarks externos alimentam os primeiros testes; após dados suficientes, a própria performance Dona Antônia define horários.
 
-Motivos:
-- idempotência;
-- tradução de estado técnico;
-- suppression;
-- consentimento;
-- auditoria;
-- portabilidade futura.
+### D015 — Métrica de negócio acima de vaidade
+Pedidos, conversas e cliques > likes.
 
-### D012 — Transacional e marketing são separados
-Mensagem necessária sobre pedido não concede consentimento de marketing.
+### D016 — Asset com preço pode expirar
+Mudança de preço/estoque/oferta antes da publicação torna asset stale e bloqueia publicação.
 
-Recompra/oferta exige opt-in válido e revogável.
+### D017 — Comentário crítico vai para humano
+Reclamação, pedido atrasado, pagamento, jurídico e incerteza não recebem auto-reply irrestrito.
 
-### D013 — Base histórica não recebe opt-in automático
-Estado observado: 0/490 clientes com opt-in ativo.
-Nunca alterar a base em lote apenas para habilitar campanhas.
+### D018 — Market local
+Cuiabá e Várzea Grande. Estratégia não busca audiência nacional sem motivo.
 
-### D014 — Outbound PapoAI é gate obrigatório
-Não programar sender usando endpoint presumido.
+### D019 — Escopo ampliado por decisão do usuário em 2026-09-25
+O escopo anterior focado em Bling/PapoAI pós-venda deixa de ser exclusivo.
+A nova frente prioritária é:
+- Instagram;
+- Facebook;
+- comment/DM oficial;
+- WhatsApp creative assets;
+- email marketing;
+- Creative/Strategy/Calendar/Analytics.
 
-Antes:
-- obter contrato outbound oficial/da conta;
-- provar envio;
-- provar template;
-- obter provider message id;
-- validar callback/status quando disponível.
+A pesquisa de pós-venda continua preservada e poderá se integrar posteriormente.
 
-### D015 — Recompra não reutiliza read models legados removidos
-Construir read model novo baseado em pedidos válidos e itens reais.
-Não reativar `customer_purchase_summary_v1`, `get_customer_purchase_history_v1` ou `customer_product_stats` sem projeto explícito.
-
-### D016 — Primeiro canário transacional
-O primeiro envio automático recomendado é `order.out_for_delivery`, após existir um estado inequívoco.
-
-Hoje `ready` e `out_for_delivery` compartilham a situação Bling `Verificado`; isso precisa ser resolvido antes.
-
-
-### D017 — Atendido não significa entrega física
-A situação padrão `Atendido` do Bling não será usada como gatilho de pós-venda, pois pode ser aplicada automaticamente na geração da NF.
-
-Fonte primária de `order.delivered`:
-- confirmação física no Core/tela do entregador.
-
-O Bling poderá receber uma situação personalizada de espelho depois da POC.
-
-### D018 — Preferir automação nativa do PapoAI se controlável
-Se o PapoAI permitir iniciar/parar régua/follow-up por API/webhook e expuser status suficiente, usar o PapoAI para timers/cadências em vez de recriar scheduler próprio.
-
-Fallback:
-- Marketing agenda e chama sender PapoAI;
-- Meta Cloud API direta somente como contingência explicitamente homologada, nunca em paralelo silencioso com o PapoAI.
+### D020 — Documentação obrigatória
+Toda rodada futura:
+1. ler PROJECT-MASTER e HANDOFF;
+2. atualizar decisões relevantes;
+3. registrar commits;
+4. atualizar HANDOFF antes de terminar.
