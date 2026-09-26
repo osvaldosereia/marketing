@@ -66,7 +66,8 @@ Adapters previstos:
 6. `docs/CONTENT-PUBLISHING-STRATEGY.md`
 7. `docs/EMAIL-MARKETING.md`
 8. `docs/SOCIAL-RESEARCH-SOURCES.md`
-9. este HANDOFF.
+9. `docs/PRODUCT-UX.md`
+10. este HANDOFF.
 
 ## Conteúdo V1
 
@@ -155,7 +156,10 @@ Fechar POC plan técnico:
 - `3f3ab3d` — content/publishing strategy;
 - `ad75d85` — email marketing;
 - `2717a44` — novo Project Master;
-- `5be6462` — decisões atualizadas.
+- `5be6462` — decisões atualizadas;
+- `b553b11` — fontes da pesquisa social;
+- `e85b3d9` — README atualizado;
+- `b4ba65d` — UX/telas da ferramenta.
 
 ## Regra para próxima janela
 
