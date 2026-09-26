@@ -67,7 +67,11 @@ Adapters previstos:
 7. `docs/EMAIL-MARKETING.md`
 8. `docs/SOCIAL-RESEARCH-SOURCES.md`
 9. `docs/PRODUCT-UX.md`
-10. este HANDOFF.
+10. `docs/META-ASSET-INVENTORY.md`
+11. `docs/TECHNICAL-IMPLEMENTATION-PLAN.md`
+12. `docs/MVP-DATA-MODEL.md`
+13. `docs/POC-PLAN.md`
+14. este HANDOFF.
 
 ## Conteúdo V1
 
@@ -165,3 +169,55 @@ Fechar POC plan técnico:
 
 Não confiar apenas na conversa.
 Ler documentação e commits mais recentes antes de mudar arquitetura ou iniciar código.
+
+
+## Auditoria Meta legado — atualização
+
+- conta Instagram Business histórica confirmada: @dona_antonia_cuiaba;
+- cenários antigos provam publicação de carrossel, comentários e private reply;
+- conexão social do Make aparece como expiring;
+- foram encontradas credenciais legadas embutidas em cenários antigos;
+- essas credenciais NÃO devem ser reutilizadas;
+- rotação Meta e GitHub entra no POC 0;
+- Make continua inativo e somente como evidência.
+
+## Decisão técnica de stack
+
+Fundação recomendada:
+- Next.js/React + TypeScript;
+- Supabase separado para Marketing;
+- Postgres/Auth/Storage;
+- Edge Functions apenas para conectores/webhooks necessários;
+- event/outbox idempotente;
+- Bridge read-only para Core Dona Antônia;
+- renderer determinístico de criativos;
+- adapters Meta/PapoAI/Brevo.
+
+## Próxima etapa escolhida
+
+**T1 — Fundação isolada do Marketing OS.**
+
+Primeiro implementar sem conectar Meta:
+1. scaffold do app;
+2. auth Owner;
+3. schema mínimo;
+4. brand tokens;
+5. campanhas;
+6. assets;
+7. calendário mock;
+8. renderer inicial de 4 produtos;
+9. testes/build;
+10. documentação.
+
+Somente depois:
+- POC 0 credenciais;
+- OAuth novo Meta;
+- read-only;
+- publicação canário.
+
+## Commits técnicos adicionais
+
+- `4af8413` — Meta asset inventory / credenciais;
+- `2c0e0ad` — Technical Implementation Plan;
+- `60b773d` — MVP Data Model;
+- `8654124` — POC Plan.
